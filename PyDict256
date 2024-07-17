@@ -1,0 +1,58 @@
+#Dictionary-based attack using SHA-256
+#Darius Jelen 11092023
+#Prereq:
+  #1. Create a text file (dictionary.txt) with each line containing a potential password.
+  #2. Set the Hashed Password: Replace hashed_password in the main() function with the actual hash you want to crack.
+  #3. ?
+  #4. Run the Script: Execute the script using Python. It will attempt to find the password by comparing hashes.
+
+import hashlib
+
+def hash_password(password: str) -> str:
+    """
+    Hash the given password using SHA-256.
+    """
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def load_dictionary(file_path: str) -> list:
+    """
+    Load the dictionary of passwords from a file.
+    """
+    with open(file_path, 'r') as file:
+        passwords = [line.strip() for line in file]
+    return passwords
+
+def dictionary_attack(hashed_password: str, dictionary_file: str) -> str:
+    """
+    Perform a dictionary attack to find the password that matches the given hashed password.
+    """
+    # Load dictionary file
+    passwords = load_dictionary(dictionary_file)
+
+    for password in passwords:
+        # Hash the current password
+        hashed_candidate = hash_password(password)
+
+        # Check if it matches the hashed password
+        if hashed_candidate == hashed_password:
+            return password
+    
+    return None
+
+def main():
+    # Example hashed password to crack (for testing purposes)
+    hashed_password = hash_password('password123')  # Replace with the target hashed password
+
+    # Path to the dictionary file (replace with your actual file path)
+    dictionary_file = 'dictionary.txt'
+
+    # Perform dictionary attack
+    found_password = dictionary_attack(hashed_password, dictionary_file)
+    
+    if found_password:
+        print(f'Password found: {found_password}')
+    else:
+        print('Password not found in dictionary.')
+
+if __name__ == '__main__':
+    main()
